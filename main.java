@@ -10,6 +10,8 @@ public class main {
     private static final int PADDLE_HEIGHT = 100;
     private static final int BALL_WIDTH = 10;
     private static final int BALL_HEIGHT = 10;
+    private static float ballSpeedX = 15;
+    private static float ballSpeedY = 15;
 
     // objects
     private static Rectangle leftPaddle;
@@ -39,6 +41,8 @@ public class main {
     }
 
     private static void update() {
+        float delatTime = GetFrameTime();
+
         if (IsKeyDown(KEY_W)) leftPaddle.y(leftPaddle.y() - 15);
         if (IsKeyDown(KEY_S)) leftPaddle.y(leftPaddle.y() + 15);
 
@@ -49,8 +53,12 @@ public class main {
         rightPaddle.y(Clamp(rightPaddle.y(), 0, SCREEN_HEIGHT - PADDLE_HEIGHT));
 
         // need to update the ball position
+        float newX = ball.y() + ballSpeedX * delatTime;
+        float newY = ball.x() + ballSpeedY * delatTime;
         ball.y(ball.y() + 3);
         ball.x(ball.x() + 3);
+
+        // add Collision detection
 
     }
 
