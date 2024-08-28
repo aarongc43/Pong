@@ -10,8 +10,8 @@ public class main {
     private static final int PADDLE_HEIGHT = 100;
     private static final int BALL_WIDTH = 10;
     private static final int BALL_HEIGHT = 10;
-    private static float ballSpeedX = 15;
-    private static float ballSpeedY = 15;
+    private static float ballSpeedX = 55;
+    private static float ballSpeedY = 155;
 
     // objects
     private static Rectangle leftPaddle;
@@ -28,8 +28,10 @@ public class main {
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pong");
         SetTargetFPS(60);
         // create objects
+        // paddle(x,y,width, height);
         leftPaddle = new Rectangle(0, SCREEN_HEIGHT / 2 - (PADDLE_WIDTH / 2), PADDLE_WIDTH, PADDLE_HEIGHT);
         rightPaddle = new Rectangle(SCREEN_WIDTH - PADDLE_WIDTH, SCREEN_HEIGHT / 2 - (PADDLE_WIDTH / 2), PADDLE_WIDTH, PADDLE_HEIGHT);
+        // ball(x,y,width, height);
         ball = new Rectangle(SCREEN_WIDTH / 2 - BALL_WIDTH, SCREEN_HEIGHT / 2 - (BALL_HEIGHT / 2), BALL_WIDTH, BALL_HEIGHT);
     }
 
@@ -41,7 +43,7 @@ public class main {
     }
 
     private static void update() {
-        float delatTime = GetFrameTime();
+        float deltaTime = GetFrameTime();
 
         if (IsKeyDown(KEY_W)) leftPaddle.y(leftPaddle.y() - 15);
         if (IsKeyDown(KEY_S)) leftPaddle.y(leftPaddle.y() + 15);
@@ -52,14 +54,55 @@ public class main {
         leftPaddle.y(Clamp(leftPaddle.y(), 0, SCREEN_HEIGHT - PADDLE_HEIGHT));
         rightPaddle.y(Clamp(rightPaddle.y(), 0, SCREEN_HEIGHT - PADDLE_HEIGHT));
 
-        // need to update the ball position
-        float newX = ball.y() + ballSpeedX * delatTime;
-        float newY = ball.x() + ballSpeedY * delatTime;
-        ball.y(ball.y() + 3);
-        ball.x(ball.x() + 3);
+        updateBallPosition(deltaTime);
+        checkBallCollision();
+        checkPaddleCollision();
+    }
 
-        // add Collision detection
+    private static void updateBallPosition(float deltaTime) {
+        float newX = ball.x() + ballSpeedX * deltaTime;
+        float newY = ball.y() + ballSpeedY * deltaTime;
+        ball.y(newY);
+        ball.x(newX);
+    }
 
+    private static void checkBallCollision() {
+        // check vertical collision detection
+        if (ball.y() < 0 || ball.y() > (SCREEN_HEIGHT - BALL_HEIGHT)) {
+            ballSpeedY *= -1;
+        }
+
+        // reset X after passing left paddle
+        if (ball.x() < 0) {
+            System.out.println("passed left paddle, right paddle score");
+            resetBall();
+        }
+        
+        // reset X after passing right paddle
+        if (ball.x() > SCREEN_WIDTH - BALL_WIDTH) {
+            System.out.println("passed right paddle, left paddle score");
+            resetBall();
+        }
+    }
+
+    private static void resetBall() {
+        ball.x(SCREEN_WIDTH / 2);
+        ball.y(SCREEN_HEIGHT / 2);
+    }
+
+    private static void checkPaddleCollision() {
+        if (CheckCollisionRecs(ball, rightPaddle)) {
+            if (ballSpeedX > 0) {
+                ballSpeedX *= -1.1f;
+                ball.x(rightPaddle.x() - ball.width());
+            }
+        }
+
+        if (CheckCollisionRecs(ball, leftPaddle)) {
+            if (ballSpeedX < 0) {
+                ballSpeedX *= -1.1f;
+            }
+        }
     }
 
     private static void render() {
@@ -73,23 +116,5 @@ public class main {
 
     private static void closeGame() {
         CloseWindow();
-    }
-
-    private static void startBall() {
-        int direction = getDirection();
-        int dx = (int)(Math.random() * 3);
-        int dy = (int)(Math.random() * 3);
-    }
-
-    private static int getDirection() {
-        int random = (int)(Math.random() * 50 - 1);
-        int direction = 0;
-
-        if (random % 2 >= 1) {
-            direction = 1;
-        } else {
-            direction = 0;
-        }
-        return direction;
     }
 }
