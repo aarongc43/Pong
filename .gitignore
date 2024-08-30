@@ -1,5 +1,6 @@
 # ignore jaylib stuff
-/com
-/org
-/META-INF
+com/
+org/
+META-INF/
 jaylib-5.0.0-0.jar
+*.class
