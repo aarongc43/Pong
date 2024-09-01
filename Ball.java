@@ -71,6 +71,10 @@ public class Ball {
         );
     }
 
+    public float getX() {
+        return ball.x();
+    }
+
     public void draw() {
         DrawRectangleRec(ball, BLACK);
     }

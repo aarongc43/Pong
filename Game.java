@@ -8,6 +8,8 @@ public class Game {
     private Paddle rightPaddle;
     private Ball ball;
 
+    private Scoreboard scoreboard;
+
     public Game (){
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pong");
         SetTargetFPS(60);
@@ -16,6 +18,7 @@ public class Game {
         leftPaddle = new Paddle(Paddle.WIDTH, SCREEN_HEIGHT / 2, true);
         rightPaddle = new Paddle(SCREEN_WIDTH - Paddle.WIDTH * 2, SCREEN_HEIGHT / 2, false);
         ball = new Ball(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+        scoreboard = new Scoreboard(SCREEN_WIDTH, SCREEN_HEIGHT);
     }
 
     public void run() {
@@ -46,11 +49,23 @@ public class Game {
     }
 
     private void checkScore() {
-        // setup new method to check for scores
-        if (ball.isOutOfBounds(GetScreenWidth())) {
+        if (ball.isOutOfBounds(SCREEN_WIDTH)) {
+            if (ball.getX() <= 0) {
+                scoreboard.update(true);
+            } else {
+                scoreboard.update(false);
+            }
             ball.reset(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-            System.out.println("Ball is out of bounds, someone scored.");
         }
+    }
+
+    private void DrawCenterCourtLine() {
+        int topOfScoreBoard = 100;
+        Vector2 startPos = new Vector2((SCREEN_WIDTH / 2), 0);
+        Vector2 endPos = new Vector2((SCREEN_WIDTH / 2), SCREEN_HEIGHT - topOfScoreBoard);
+        float lineThickness = 2.5f;
+
+        DrawLineEx(startPos, endPos, lineThickness, BLACK);
     }
 
     private void render() {
@@ -59,6 +74,8 @@ public class Game {
         leftPaddle.draw();
         rightPaddle.draw();
         ball.draw();
+        scoreboard.draw();
+        DrawCenterCourtLine();
         EndDrawing();
     }
     
