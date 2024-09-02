@@ -3,7 +3,7 @@
 A simple implementation of the classic Pong game in Java with the Raylib port
 Jaylib.
 
-![Pong Game Demo](assets/demo.gif)
+![Pong Game Demo](assets/demo.mov)
 
 ## Table of Contents
 1. [Overview](#overview)
