@@ -51,9 +51,9 @@ public class Game {
     private void checkScore() {
         if (ball.isOutOfBounds(SCREEN_WIDTH)) {
             if (ball.getX() <= 0) {
-                scoreboard.update(true);
-            } else {
                 scoreboard.update(false);
+            } else {
+                scoreboard.update(true);
             }
             ball.reset(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
         }
